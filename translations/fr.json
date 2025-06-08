@@ -1,0 +1,16 @@
+{
+    "title": "HVAC MQTT",
+    "config": {
+      "step": {
+        "user": {
+          "title": "Connexion au broker MQTT",
+          "description": "Renseigne l'adresse IP et le port du broker.",
+          "data": {
+            "host": "Adresse IP du broker",
+            "port": "Port"
+          }
+        }
+      }
+    }
+  }
+  

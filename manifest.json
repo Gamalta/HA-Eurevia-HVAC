@@ -1,0 +1,9 @@
+{
+    "domain": "eurevia-hvac",
+    "name": "Eurevia HVAC",
+    "version": "1.0.0",
+    "config_flow": true,
+    "dependencies": [],
+    "codeowners": ["@Gamalta"],
+    "requirements": ["paho-mqtt"]
+}
