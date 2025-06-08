@@ -6,7 +6,10 @@ from homeassistant.helpers.dispatcher import async_dispatcher_send
 async def setup_mqtt(hass, mqtt_client):
     async def message_received(topic, payload_raw):
         payload = json.loads(payload_raw)
-        device_id = str(payload["ID"])
+
+        if payload.get("ID") is None:
+            return
+        device_id = str(payload.get("ID"))
 
         if device_id not in hass.data[DOMAIN]["coordinators"]:
             coordinator = EureviaCoordinator(hass, device_id, mqtt_client)
