@@ -14,7 +14,9 @@ class EureviaHVACMQTTConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         schema = vol.Schema({
             vol.Required("host"): str,
-            vol.Required("port", default=1883): int
+            vol.Required("port", default=1883): int,
+            vol.Optional("user"): str,
+            vol.Optional("password"): str
         })
 
         return self.async_show_form(step_id="user", data_schema=schema, errors=errors)

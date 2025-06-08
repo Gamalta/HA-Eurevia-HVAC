@@ -1,40 +1,44 @@
-import paho.mqtt.client as mqtt
-import threading
+import asyncio
 import logging
+import paho.mqtt.client as mqtt
 
 _LOGGER = logging.getLogger(__name__)
 
 class EureviaMQTTClient:
-    def __init__(self, host, port, on_message):
+    def __init__(self, host, port, user=None, password=None):
         self._host = host
         self._port = port
-        self._on_message = on_message
+        self._user = user
+        self._password = password
         self._client = mqtt.Client()
-        self._client.on_connect = self._on_connect
-        self._client.on_message = self._on_message_internal
-        self._connected = False
-        self._subscriptions = []
+        self._loop = asyncio.get_event_loop()
+        self._subscriptions = {}
 
-    def _on_connect(self, client, userdata, flags, rc):
-        _LOGGER.info(f"Connected to external MQTT broker at {self._host}:{self._port}")
-        self._connected = True
-        for topic in self._subscriptions:
-            client.subscribe(topic)
+    async def connect(self):
+        if self._user:
+            self._client.username_pw_set(self._user, self._password)
 
-    def _on_message_internal(self, client, userdata, msg):
-        payload = msg.payload.decode()
-        self._on_message(msg.topic, payload)
+        self._client.on_message = self._on_message
+        self._client.connect(self._host, self._port)
+        self._client.loop_start()
 
-    def start(self):
-        def run():
-            self._client.connect(self._host, self._port, 60)
-            self._client.loop_forever()
-        threading.Thread(target=run, daemon=True).start()
-
-    def subscribe(self, topic, qos=0):
-        self._subscriptions.append(topic)
-        if self._connected:
-            self._client.subscribe(topic, qos)
-
-    def publish(self, topic, payload):
+    async def publish(self, topic, payload):
         self._client.publish(topic, payload)
+
+    async def subscribe(self, topic, callback):
+        self._subscriptions[topic] = callback
+        self._client.subscribe(topic)
+
+    def _on_message(self, client, userdata, msg):
+        payload = msg.payload.decode()
+        _LOGGER.debug(f"MQTT message received on {msg.topic}: {payload}")
+        if msg.topic in self._subscriptions:
+            self._loop.call_soon_threadsafe(
+                asyncio.create_task, self._subscriptions[msg.topic](msg.topic, payload)
+            )
+        else:
+            for sub_topic, callback in self._subscriptions.items():
+                if mqtt.topic_matches_sub(sub_topic, msg.topic):
+                    self._loop.call_soon_threadsafe(
+                        asyncio.create_task, callback(msg.topic, payload)
+                    )

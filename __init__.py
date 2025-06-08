@@ -1,34 +1,18 @@
-from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from .const import DOMAIN
-from .mqtt_client import EureviaMQTTClient
+from homeassistant.helpers.dispatcher import async_dispatcher_send
+from .mqtt_handler import setup_mqtt
+from .const import DOMAIN, PLATFORMS
+from mqtt_client import EureviaMQTTClient
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
-    hass.data.setdefault(DOMAIN, {})
-
     config = entry.data
-    host = config["host"]
-    port = config["port"]
+    mqtt_client = EureviaMQTTClient(config["host"], config["port"], config.get("user"), config.get("password"))
+    await mqtt_client.connect()
 
-    def on_message(topic, payload):
-        hass.loop.call_soon_threadsafe(
-            lambda: async_dispatcher_send(
-                hass,
-                f"{DOMAIN}_mqtt_message",
-                topic,
-                payload
-            )
-        )
-    
-    mqtt_client = EureviaMQTTClient(host, port, on_message)
-    mqtt_client.start()
-    mqtt_client.subscribe("local/hvac/devices/#")
+    hass.data.setdefault(DOMAIN, {"mqtt_client": mqtt_client, "coordinators": {}})
 
-    hass.data[DOMAIN][entry.entry_id] = {
-        "mqtt_client": mqtt_client,
-    }
+    await setup_mqtt(hass, mqtt_client)
 
-    await hass.config_entries.async_forward_entry_setups(entry, ["climate"])
-
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True

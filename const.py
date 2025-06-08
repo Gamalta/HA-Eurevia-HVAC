@@ -7,6 +7,8 @@ from homeassistant.components.climate import (
 from enum import IntEnum
 
 DOMAIN = "eurevia-hvac"
+PLATFORMS = ["climate", "sensor", "binary_sensor"]
+MQTT_TOPIC = "local/hvac/devices"
 
 class EureviaMode(IntEnum):
     """HVAC mode for eurevia climate devices."""
