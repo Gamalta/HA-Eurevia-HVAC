@@ -25,8 +25,10 @@ class EureviaCoordinator(DataUpdateCoordinator):
 
     async def async_subscribe(self):
         async def message_received(msg_topic, payload_raw):
+            _LOGGER.info('message_received')
             payload = json.loads(payload_raw)
             if str(payload.get("ID")) != self.device_id:
                 return
+            _LOGGER.error("message_received for device id: %s", {self.device_id})
             self.update_data(payload)
         await self._mqtt.subscribe(f"{MQTT_TOPIC}/#", message_received)
