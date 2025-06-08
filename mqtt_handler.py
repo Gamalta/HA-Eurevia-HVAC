@@ -23,7 +23,6 @@ async def setup_mqtt(hass, mqtt_client):
 
             async_dispatcher_send(hass, f"{DOMAIN}_new_device", coordinator)
 
-        _LOGGER.error("update entity %s %s %s", device_id, topic_id, payload)
         coordinator.update_data(payload)
 
     await mqtt_client.subscribe(f"{MQTT_TOPIC}/#", message_received)
