@@ -3,7 +3,6 @@ from homeassistant.components.climate import (
     PRESET_COMFORT,
     PRESET_SLEEP,
     PRESET_ECO,
-    PRESET_NONE,
 )
 from enum import IntEnum
 

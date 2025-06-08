@@ -5,10 +5,7 @@ from homeassistant.const import UnitOfTemperature
 from homeassistant.components.climate.const import HVACMode, HVACAction, PRESET_NONE, ClimateEntityFeature
 from homeassistant.core import HomeAssistant
 from .const import DOMAIN, EUREVIA_PRESET_MODE_TO_HA_PRESET_MODE, EUREVIA_HVAC_MODE_TO_HA_HVAC_MODE
-import logging
 import json
-
-_LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
     mqtt_client = hass.data[DOMAIN][entry.entry_id]["mqtt_client"]
@@ -50,7 +47,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
 class EureviaHVACMQTTClimate(ClimateEntity):
 
 
-    
+
     def __init__(self, mqtt_client, topic, device_id, payload):
         self._mqtt = mqtt_client
         self._topic = topic
@@ -72,7 +69,7 @@ class EureviaHVACMQTTClimate(ClimateEntity):
         return {
             "identifiers": {(DOMAIN, self._device_id)},
             "name": f"Eurevia HVAC {self._state['zone_name']}",
-            "manufacturer": "Eurevia", 
+            "manufacturer": "Eurevia",
             "model": "HVAC",
         }
 
@@ -151,7 +148,7 @@ class EureviaHVACMQTTClimate(ClimateEntity):
 
     async def async_set_hvac_mode(self, hvac_mode):
         await self.update_operating_mode(hvac_mode)
-    
+
 
 
     @property

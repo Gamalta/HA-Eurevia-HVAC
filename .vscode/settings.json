@@ -1,0 +1,21 @@
+{
+  "files.eol": "\n",
+  "editor.tabSize": 4,
+  "python.analysis.autoSearchPaths": true,
+  "python.linting.pylintEnabled": true,
+  "python.linting.enabled": true,
+  "python.formatting.provider": "black",
+  "editor.formatOnPaste": false,
+  "editor.formatOnSave": true,
+  "editor.formatOnType": true,
+  "files.trimTrailingWhitespace": true,
+  "cSpell.words": [
+    "Comf",
+    "Eurevia",
+    "hass",
+    "hvac",
+    "HVACMQTT",
+    "mqtt",
+    "reduit"
+  ]
+}
