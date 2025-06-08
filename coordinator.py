@@ -12,7 +12,7 @@ class EureviaCoordinator(DataUpdateCoordinator):
         self._topic_id = topic_id
 
     @property
-    def device_id(self):
+    def topic_id(self):
         return self._topic_id
 
     def update_data(self, payload):
