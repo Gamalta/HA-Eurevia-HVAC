@@ -9,15 +9,11 @@ async def setup_mqtt(hass, mqtt_client):
         payload = json.loads(payload_raw)
         topic_id = topic.split('/')[-1]
 
-        if payload.get("ID") is None:
-            return
-        device_id = str(payload.get("ID"))
-
-        coordinator = hass.data[DOMAIN]["coordinators"].get(device_id)
+        coordinator = hass.data[DOMAIN]["coordinators"].get(topic_id)
         if not coordinator:
-            coordinator = EureviaCoordinator(hass, topic_id, device_id, mqtt_client)
+            coordinator = EureviaCoordinator(hass, topic_id, mqtt_client)
             coordinator.update_data(payload)
-            hass.data[DOMAIN]["coordinators"][device_id] = coordinator
+            hass.data[DOMAIN]["coordinators"][topic_id] = coordinator
             async_dispatcher_send(hass, f"{DOMAIN}_new_device", coordinator)
         else:
             coordinator.update_data(payload)

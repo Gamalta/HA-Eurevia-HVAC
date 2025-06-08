@@ -23,12 +23,12 @@ class EureviaClimate(CoordinatorEntity, ClimateEntity):
     def __init__(self, coordinator: EureviaCoordinator):
         super().__init__(coordinator)
         self._coordinator = coordinator
-        self._device_id = coordinator.device_id
+        self._topic_id = coordinator.topic_id
 
     @property
     def device_info(self):
         return {
-            "identifiers": {(DOMAIN, self._device_id)},
+            "identifiers": {(DOMAIN, self._topic_id)},
             "name": f"Eurevia HVAC {self.zone_name}",
             "manufacturer": "Eurevia",
             "model": "HVAC",
@@ -36,7 +36,7 @@ class EureviaClimate(CoordinatorEntity, ClimateEntity):
 
     @property
     def unique_id(self):
-        return self._device_id
+        return self._topic_id
 
     @property
     def zone_name(self):

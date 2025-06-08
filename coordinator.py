@@ -6,15 +6,14 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 _LOGGER = logging.getLogger(__name__)
 
 class EureviaCoordinator(DataUpdateCoordinator):
-    def __init__(self, hass, topic_id, device_id, mqtt_client):
-        super().__init__(hass, _LOGGER, name=f"Eurevia {device_id}")
+    def __init__(self, hass, topic_id, mqtt_client):
+        super().__init__(hass, _LOGGER, name=f"Eurevia {topic_id}")
         self._mqtt = mqtt_client
         self._topic_id = topic_id
-        self._device_id = device_id
 
     @property
     def device_id(self):
-        return self._device_id
+        return self._topic_id
 
     def update_data(self, payload):
         self.async_set_updated_data(payload)

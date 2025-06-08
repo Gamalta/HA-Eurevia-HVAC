@@ -6,8 +6,6 @@ from .const import DOMAIN
 from .models import SENSOR_DEFINITIONS
 import logging
 
-_LOGGER = logging.getLogger(__name__)
-
 async def async_setup_entry(hass, config_entry, async_add_entities):
     async def add_coordinator(coordinator):
         entities = []
@@ -26,7 +24,7 @@ class EureviaSensor(CoordinatorEntity, SensorEntity):
         super().__init__(coordinator)
         self._coordinator = coordinator
         self._definition = definition
-        self._device_id = coordinator.device_id
+        self._topic_id = coordinator.topic_id
 
         self._attr_native_unit_of_measurement = definition.get("unit")
         self._attr_device_class = definition.get("device_class")
@@ -38,12 +36,12 @@ class EureviaSensor(CoordinatorEntity, SensorEntity):
     @property
     def zone_name(self):
         data = self._coordinator.data
-        return data.get("Th_Name") or data.get("Custom_Zone_Name") or data.get("Zone_Name")
+        return data.get("Th_Name") or data.get("Custom_Zone_Name") or data.get("Zone_Name") or data.get("Name")
 
     @property
     def device_info(self) -> DeviceInfo:
         return {
-            "identifiers": {(DOMAIN, self._device_id)},
+            "identifiers": {(DOMAIN, self._topic_id)},
             "name": f"Eurevia HVAC {self.zone_name}",
             "manufacturer": "Eurevia",
             "model": "HVAC",

@@ -23,7 +23,7 @@ class EureviaBinarySensor(CoordinatorEntity, BinarySensorEntity):
         super().__init__(coordinator)
         self._coordinator = coordinator
         self._definition = definition
-        self._device_id = coordinator.device_id
+        self._topic_id = coordinator.topic_id
 
         self._attr_device_class = definition.get("device_class")
 
@@ -40,7 +40,7 @@ class EureviaBinarySensor(CoordinatorEntity, BinarySensorEntity):
     @property
     def device_info(self) -> DeviceInfo:
         return {
-            "identifiers": {(DOMAIN, self._device_id)},
+            "identifiers": {(DOMAIN, self._topic_id)},
             "name": f"Eurevia HVAC {self.zone_name}",
             "manufacturer": "Eurevia",
             "model": "HVAC",
