@@ -21,21 +21,31 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class EureviaSensor(CoordinatorEntity, SensorEntity):
     def __init__(self, coordinator, definition):
         super().__init__(coordinator)
+        self._coordinator = coordinator
         self._definition = definition
-        self._attr_unique_id = f"{coordinator.device_id}_{definition['field']}"
-        self._attr_name = f"{definition['name']}"
+        self._device_id = coordinator.device_id
+
         self._attr_unit_of_measurement = definition.get("unit")
         self._attr_device_class = definition.get("device_class")
 
     @property
-    def native_value(self):
-        return self.coordinator.data.get(self._definition["field"])
+    def unique_id(self):
+        return self._device_id
+
+    @property
+    def zone_name(self):
+        data = self._coordinator.data
+        return data.get("Th_Name") or data.get("Custom_Zone_Name") or data.get("Zone_Name")
 
     @property
     def device_info(self) -> DeviceInfo:
         return {
-            "identifiers": {(DOMAIN, self.coordinator.device_id)},
+            "identifiers": {(DOMAIN, self._device_id)},
+            "name": f"Eurevia HVAC {self.zone_name} {self._definition["name"]}",
             "manufacturer": "Eurevia",
             "model": "HVAC",
-            "name": f"Eurevia {self.coordinator.device_id}",
         }
+
+    @property
+    def native_value(self):
+        return self._coordinator.data.get(self._definition["field"])

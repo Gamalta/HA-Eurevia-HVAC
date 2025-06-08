@@ -1,4 +1,5 @@
 from homeassistant.components.binary_sensor import BinarySensorEntity
+from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from .models import BINARY_SENSOR_DEFINITIONS
@@ -20,11 +21,30 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class EureviaBinarySensor(CoordinatorEntity, BinarySensorEntity):
     def __init__(self, coordinator, definition):
         super().__init__(coordinator)
+        self._coordinator = coordinator
         self._definition = definition
-        self._attr_unique_id = f"{coordinator.device_id}_{definition['field']}"
-        self._attr_name = f"{definition['name']}"
+        self._device_id = coordinator.device_id
+
         self._attr_device_class = definition.get("device_class")
 
     @property
+    def unique_id(self):
+        return self._device_id
+
+    @property
+    def zone_name(self):
+        data = self._coordinator.data
+        return data.get("Th_Name") or data.get("Custom_Zone_Name") or data.get("Zone_Name")
+
+    @property
+    def device_info(self) -> DeviceInfo:
+        return {
+            "identifiers": {(DOMAIN, self._device_id)},
+            "name": f"Eurevia HVAC {self.zone_name} {self._definition["name"]}",
+            "manufacturer": "Eurevia",
+            "model": "HVAC",
+        }
+
+    @property
     def is_on(self):
-        return self.coordinator.data.get(self._definition["field"])
+        return self._coordinator.data.get(self._definition["field"])
