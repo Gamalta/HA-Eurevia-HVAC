@@ -12,6 +12,10 @@ class EureviaCoordinator(DataUpdateCoordinator):
         self._device_id = device_id
         self.data = {}
 
+    @property
+    def device_id(self):
+        return self._device_id
+
     def update_data(self, payload):
         self.data = payload
         self.async_set_updated_data(self.data)
