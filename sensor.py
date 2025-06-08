@@ -4,6 +4,9 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from .const import DOMAIN
 from .models import SENSOR_DEFINITIONS
+import logging
+
+_LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     async def add_coordinator(coordinator):
@@ -24,7 +27,7 @@ class EureviaSensor(CoordinatorEntity, SensorEntity):
         self._coordinator = coordinator
         self._definition = definition
         self._device_id = coordinator.device_id
-
+        _LOGGER.error(definition.get("unit"))
         self._attr_unit_of_measurement = definition.get("unit")
         self._attr_device_class = definition.get("device_class")
 
@@ -48,6 +51,7 @@ class EureviaSensor(CoordinatorEntity, SensorEntity):
 
     @property
     def unit_of_measurement(self) -> str | None:
+        _LOGGER.error(self._definition.get("unit"))
         return self._definition.get("unit")
 
     @property
