@@ -2,19 +2,23 @@ from homeassistant.components.climate import ClimateEntity, ClimateEntityFeature
 from homeassistant.components.climate.const import HVACMode, PRESET_NONE
 from homeassistant.const import UnitOfTemperature
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.helpers.dispatcher import async_dispatcher_connect
 
 from .const import DOMAIN, EUREVIA_HVAC_MODE_TO_HA_HVAC_MODE, EUREVIA_PRESET_MODE_TO_HA_PRESET_MODE
 from .coordinator import EureviaCoordinator
 
 async def async_setup_entry(hass, entry, async_add_entities):
-    coordinators = hass.data[DOMAIN]["coordinators"].values()
-
-    entities = []
-    for coordinator in coordinators:
+    async def add_coordinator(device_id):
+        coordinator = hass.data[DOMAIN]["coordinators"][device_id]
         if all(k in coordinator.data for k in ("ID", "Mode_Active", "Stp_Comf", "Zone_Name")):
-            entities.append(EureviaClimate(coordinator))
+            async_add_entities([EureviaClimate(coordinator)])
 
-    async_add_entities(entities)
+    for device_id in hass.data[DOMAIN]["coordinators"]:
+        await add_coordinator(device_id)
+
+    async_dispatcher_connect(hass, f"{DOMAIN}_new_device", add_coordinator)
+
+
 class EureviaClimate(CoordinatorEntity, ClimateEntity):
 
     def __init__(self, coordinator: EureviaCoordinator):
