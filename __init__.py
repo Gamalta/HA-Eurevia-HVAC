@@ -3,7 +3,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 from .mqtt_handler import setup_mqtt
 from .const import DOMAIN, PLATFORMS
-from mqtt_client import EureviaMQTTClient
+from .mqtt_client import EureviaMQTTClient
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     config = entry.data
