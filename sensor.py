@@ -27,8 +27,8 @@ class EureviaSensor(CoordinatorEntity, SensorEntity):
         self._coordinator = coordinator
         self._definition = definition
         self._device_id = coordinator.device_id
-        _LOGGER.error(definition.get("unit"))
-        self._attr_unit_of_measurement = definition.get("unit")
+
+        self._attr_native_unit_of_measurement = definition.get("unit")
         self._attr_device_class = definition.get("device_class")
 
     @property
@@ -48,11 +48,6 @@ class EureviaSensor(CoordinatorEntity, SensorEntity):
             "manufacturer": "Eurevia",
             "model": "HVAC",
         }
-
-    @property
-    def unit_of_measurement(self) -> str | None:
-        _LOGGER.error(self._definition.get("unit"))
-        return self._definition.get("unit")
 
     @property
     def native_value(self):
