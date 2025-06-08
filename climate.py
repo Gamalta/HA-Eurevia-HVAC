@@ -10,9 +10,11 @@ from .coordinator import EureviaCoordinator
 
 async def async_setup_entry(hass, entry, async_add_entities):
     async def add_coordinator(coordinator):
-        async_add_entities([EureviaClimate(coordinator)])
+        data = coordinator.data
+        if all(k in data for k in ("ID", "Mode_Active", "Stp_Comf", "Zone_Name")):
+            async_add_entities([EureviaClimate(coordinator)])
 
-    for coordinator in hass.data[DOMAIN]["coordinators"].values():
+    for coordinator in hass.data[DOMAIN].values():
         await add_coordinator(coordinator)
 
     async_dispatcher_connect(hass, f"{DOMAIN}_new_device", add_coordinator)

@@ -8,7 +8,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     async def add_coordinator(coordinator):
         entities = []
         for definition in BINARY_SENSOR_DEFINITIONS:
-            entities.append(EureviaBinarySensor(coordinator, definition))
+            if(definition["field"] in coordinator.data):
+                entities.append(EureviaBinarySensor(coordinator, definition))
         async_add_entities(entities)
 
     for coordinator in hass.data[DOMAIN]["coordinators"].values():
