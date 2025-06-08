@@ -30,7 +30,7 @@ class EureviaSensor(CoordinatorEntity, SensorEntity):
 
     @property
     def unique_id(self):
-        return self._device_id
+        return f"{self._device_id}_{self._definition["field"]}"
 
     @property
     def zone_name(self):
