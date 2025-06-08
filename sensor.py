@@ -47,5 +47,9 @@ class EureviaSensor(CoordinatorEntity, SensorEntity):
         }
 
     @property
+    def unit_of_measurement(self) -> str | None:
+        return self._definition.get("unit")
+
+    @property
     def native_value(self):
         return self._coordinator.data.get(self._definition["field"])
