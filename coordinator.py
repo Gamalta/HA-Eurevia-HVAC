@@ -10,15 +10,13 @@ class EureviaCoordinator(DataUpdateCoordinator):
         super().__init__(hass, _LOGGER, name=f"Eurevia {device_id}")
         self._mqtt = mqtt_client
         self._device_id = device_id
-        self.data = {}
 
     @property
     def device_id(self):
         return self._device_id
 
     def update_data(self, payload):
-        self.data = payload
-        self.async_set_updated_data(self.data)
+        self.async_set_updated_data(payload)
 
     async def publish(self, topic_suffix, message_dict):
         topic = f"{MQTT_TOPIC}/{self._device_id}/{topic_suffix}"
