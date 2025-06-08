@@ -6,9 +6,10 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 _LOGGER = logging.getLogger(__name__)
 
 class EureviaCoordinator(DataUpdateCoordinator):
-    def __init__(self, hass, device_id, mqtt_client):
+    def __init__(self, hass, topic_id, device_id, mqtt_client):
         super().__init__(hass, _LOGGER, name=f"Eurevia {device_id}")
         self._mqtt = mqtt_client
+        self._topic_id = topic_id
         self._device_id = device_id
 
     @property
@@ -19,16 +20,6 @@ class EureviaCoordinator(DataUpdateCoordinator):
         self.async_set_updated_data(payload)
 
     async def publish(self, topic_suffix, message_dict):
-        topic = f"{MQTT_TOPIC}/{self._device_id}/{topic_suffix}"
+        topic = f"{MQTT_TOPIC}/{self._topic_id}/{topic_suffix}"
         payload = json.dumps(message_dict)
         await self._mqtt.publish(topic, payload)
-
-    async def async_subscribe(self):
-        async def message_received(msg_topic, payload_raw):
-            _LOGGER.info('message_received')
-            payload = json.loads(payload_raw)
-            if str(payload.get("ID")) != self.device_id:
-                return
-            _LOGGER.error("message_received for device id: %s", {self.device_id})
-            self.update_data(payload)
-        await self._mqtt.subscribe(f"{MQTT_TOPIC}/#", message_received)
