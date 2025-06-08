@@ -40,8 +40,8 @@ class EureviaSensor(CoordinatorEntity, SensorEntity):
     @property
     def device_info(self) -> DeviceInfo:
         return {
-            "identifiers": {(DOMAIN, self.zone_name, self._definition["field"])},
-            "name": f"Eurevia HVAC {self.zone_name} {self._definition["name"]}",
+            "identifiers": {(DOMAIN, self._device_id)},
+            "name": f"Eurevia HVAC {self.zone_name}",
             "manufacturer": "Eurevia",
             "model": "HVAC",
         }
