@@ -1,5 +1,5 @@
 {
-    "title": "HVAC MQTT",
+    "title": "Eurevia HVAC",
     "config": {
       "step": {
         "user": {
@@ -13,4 +13,3 @@
       }
     }
   }
-  
