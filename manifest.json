@@ -5,6 +5,5 @@
     "config_flow": true,
     "dependencies": [],
     "codeowners": ["@Gamalta"],
-    "requirements": ["paho-mqtt"],
-    "icon": "/local/icons/eurevia.png"
+    "requirements": ["paho-mqtt"]
 }
