@@ -4,6 +4,9 @@ SENSOR_DEFINITIONS = [
     {"field": "LQI", "name": "LQI", "unit": None, "device_class": None},
     {"field": "LQI_percent", "name": "LQI %", "unit": "%", "device_class": None},
 
+    {"field": "Tmp", "name": "Temperature", "unit": "°C", "device_class": "temperature"},
+    {"field": "RH", "name": "Humidity", "unit": "%", "device_class": None},
+
     {"field": "Water_Temp", "name": "Water Temperature", "unit": "°C", "device_class": "temperature"},
     {"field": "Air_Temp", "name": "Air Temperature", "unit": "°C", "device_class": "temperature"},
 ]
